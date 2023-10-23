@@ -4,18 +4,18 @@ recognizer = sr.Recognizer()
 
 ''' recording the sound '''
 
-with sr.AudioFile("./sample_audio/speech.wav") as source:
+with sr.AudioFile("./sample_audio/sample01.wav") as source:
     recorded_audio = recognizer.listen(source)
     print("Done recording")
 
-''' Recorgnizing the Audio '''
-try:
-    print("Recognizing the text")
-    text = recognizer.recognize_google(
-            recorded_audio, 
-            language="en-US"
-        )
-    print("Decoded Text : {}".format(text))
+    ''' Recorgnizing the Audio '''
+    try:
+        print("Recognizing the text")
+        text = recognizer.recognize_google(
+                recorded_audio, 
+                language="en-US"
+            )
+        print("Decoded Text : {}".format(text))
 
-except Exception as ex:
-    print(ex)
+    except Exception as ex:
+        print(ex)
