@@ -10,7 +10,7 @@ MAX_WORKERS = 5
 
 class AudioSplitter:
     DEFAULT_OFFSET = 10
-    DEFAULT_MIN_SILENCE_LEN = 2000
+    DEFAULT_MIN_SILENCE_LEN = 1500
     DEFAULT_MAX_N_OF_CHUNKS = 10
 
     def __init__(self, file: str) -> None:
@@ -33,7 +33,7 @@ class AudioSplitter:
     def _get_average_chunk_size(self, chunks: list):
         if len(chunks) == 0:
             return None
-        return sum([getsizeof(obj) for obj in chunks]) / len(chunks)
+        return f"{getsizeof(chunks) / len(chunks)}bytes"
 
     def load_chunks(
         self, min_silence_len=DEFAULT_MIN_SILENCE_LEN, verbose=True
@@ -72,7 +72,7 @@ class AudioSplitter:
                     size = len(chunks)
                     if verbose:
                         print(
-                            f"[Info] Phase_{i+1}\nNumber of chunks: {size}.\nAverage chunk size: {self._get_average_chunk_size(chunks)}bytes.\n\n"
+                            f"[Info] Phase_{i+1}\nNumber of chunks: {size}.\nAverage chunk size: {self._get_average_chunk_size(chunks)}.\n\n"
                         )
 
                     if (
