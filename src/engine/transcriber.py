@@ -13,7 +13,7 @@ class Transcriber:
     @Logger.log
     def transcribe(self, splitter: AudioSplitter, *args):
         chunks: list[AudioSegment] = splitter.load_chunks()
-        err_message = BLANK
+        v = err_message = BLANK
         if not chunks:
             Logger.warn("No chunks found")
             return
@@ -28,8 +28,10 @@ class Transcriber:
                 try:
                     google_txt = self.r.recognize_google(audio)
                     print(f" [{i}]{google_txt}", end=" ")
+                    v += f"{google_txt} "
                 except Exception as ex:
                     print(f"<<[e{i}]>>", end=" ")
                     err_message += f"{ex}\n"
 
         Logger.warn(err_message)
+        return v
