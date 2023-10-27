@@ -1,20 +1,22 @@
 class Logger:
     _logging = False
-    _permer_off = False
-
-    @property
-    def permer_off(cls):
-        pass
 
     @classmethod
     def on(cls):
-        if not Logger.permer_off:
-            Logger._logging = True
+        Logger._logging = True
 
     @classmethod
     def off(cls):
-        if not Logger.permer_off:
-            Logger._logging = False
+        Logger._logging = False
+
+    @classmethod
+    def log(cls, fn):
+        Logger.on()
+        return fn
+
+    @classmethod
+    def _handle_last(cls, fn):
+        Logger.off()
 
     @classmethod
     def info(cls, msg: str):
