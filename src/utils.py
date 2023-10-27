@@ -1,3 +1,4 @@
+from src.tools.logger import Logger
 from sys import getsizeof
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
@@ -65,10 +66,7 @@ class AudioSplitter:
         Returns:
         list[AudioSegment]
         """
-
-        if verbose:
-            print("[Info] Converting audio into chunks")
-
+        Logger.debug("Converting audio into chunks")
         best_chunk = None
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
@@ -88,24 +86,22 @@ class AudioSplitter:
                     pass
 
                 try:
-                    if verbose:
-                        print(
-                            f"[Info] Phase_{i+1}\nNumber of chunks: {c.size}.\nAverage chunk size: {c.av_size}.\n\n"
-                        )
-
+                    Logger.debug(
+                        f"Phase_{i+1}\nNumber of chunks: {c.size}.\nAverage chunk size: {c.av_size}.\n\n"
+                    )
                     if c.av_size <= self.DEFAULT_MAX_N_OF_CHUNKS and (
                         not best_chunk or (c.av_size > best_chunk.size)
                     ):
                         best_chunk = c
 
                 except Exception as exc:
-                    print(
-                        f"[Error] Something went wrong while splitting chunks. See error msg: {exc}"
+                    Logger.warn(
+                        f"Something went wrong while splitting chunks. See error msg: {exc}"
                     )
 
-        if verbose and best_chunk:
-            print(
-                f"[Info] Audio splitting into chunks complete! Number of chunks: {best_chunk.size}"
+        if best_chunk:
+            Logger.info(
+                f"Audio splitting into chunks complete! Number of chunks: {best_chunk.size}"
             )
 
         return best_chunk.chunks if best_chunk else []

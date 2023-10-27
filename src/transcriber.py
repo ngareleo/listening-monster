@@ -1,31 +1,34 @@
 import speech_recognition as sr
+
+from tools.logger import Logger
 from .utils import AudioSplitter
+
+MAX_WORKERS = 5
+BLANK = ""
 
 
 class Transcriber:
     def __init__(self):
         self.r = sr.Recognizer()
 
-    def transcribe(self, audio_file_loc: str):
-        splitter = AudioSplitter(audio_file_loc)
+    def transcribe(self, path: str, *args):
+        splitter = AudioSplitter(path)
         chunks = splitter.load_chunks()
-        res = ""
-        e = ""
+        res = err = ""
 
         for i, audio_chunk in enumerate(chunks):
             audio_chunk.export("temp", format="wav")
             with sr.AudioFile("temp") as source:
                 audio = self.r.listen(source)
                 try:
-                    text = self.r.recognize_google(audio)
-                    res += f" [{i}] {text} "
-
+                    google_txt = self.r.recognize_google(audio)
+                    res.join([f" [{i}]{google_txt}"])
                 except Exception as ex:
-                    res += f"<<[e{i}>>"
-                    e += f"{ex.with_traceback}\n"
+                    res.join([f"<<[e{i}]>>"])
+                    err.join([f"{ex}\n"])
 
-        if res != "":
-            print(f"{res}")
+        if res is not BLANK:
+            Logger.info(res)
 
-        if e != "":
-            print(f"[Errors] {e}")
+        if err is not BLANK:
+            Logger.warn(err)
