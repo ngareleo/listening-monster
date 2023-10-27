@@ -1,7 +1,6 @@
 import unittest
-from src.engine import Transcriber
-from src.tools import Logger, TimebasedAudioSplitter
-from src.tools.audio_splitter import SilenceAudioSplitter
+from source.engine.transcriber import Transcriber
+from source.engine.tools import TimebasedAudioSplitter, SilenceAudioSplitter
 
 
 class TestEngine(unittest.TestCase):
