@@ -7,3 +7,5 @@ if __name__ == "__main__":
     timebased_split = TimebasedAudioSplitter(fn, 5)
     t = Transcriber()
     t.transcribe(timebased_split)
+    off_timebased_split = TimebasedAudioSplitter(fn, 8)
+    t.transcribe(off_timebased_split)

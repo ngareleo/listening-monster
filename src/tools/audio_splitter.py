@@ -7,9 +7,6 @@ from abc import ABC
 from .logger import Logger
 
 
-MAX_WORKERS = 5
-
-
 class AudioSplitter(ABC):
     def load_chunks(self) -> list[AudioSegment]:
         return []
@@ -19,17 +16,15 @@ class TimebasedAudioSplitter(AudioSplitter):
     def __init__(self, file: str, interval: int) -> None:
         self.file = file
         self.audio = AudioSegment.from_file(self.file)
-        self.interval = interval  # in secs
-        self._interval = 1000 * self.interval
+        self.s = interval  # in secs
+        self.ms = 1000 * self.s
 
     @Logger.log
     def load_chunks(self):
-        n_chunks = len(self.audio) // self._interval + 1
-        chunks = [self.audio[i : i + self._interval] for i in range(n_chunks)]
-        staggered_chunks = [
-            self.audio[i : i + self._interval] for i in range(n_chunks + 1)
+        return [
+            self.audio[i * self.ms : i * self.ms + self.ms]
+            for i in range(len(self.audio) // self.ms + 1)
         ]
-        return chunks
 
 
 class SilenceAudioSplitter(AudioSplitter):
@@ -56,6 +51,7 @@ class SilenceAudioSplitter(AudioSplitter):
     DEFAULT_MAX_N_OF_CHUNKS = 15
     DEFAULT_MAX_CHUNK_SIZE = 60  # in bytes
     DEFAULT_MIN_CHUNK_SIZE = 20  # in bytes
+    DEFAULT_MAX_N_OF_WORKERS = 5
 
     def __init__(self, file: str) -> None:
         self.file = file
@@ -93,7 +89,9 @@ class SilenceAudioSplitter(AudioSplitter):
         Logger.debug("Converting audio into chunks")
         best_chunk = None
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=self.DEFAULT_MAX_N_OF_WORKERS
+        ) as executor:
             future_to_offset = {
                 executor.submit(
                     self._load_chunks,

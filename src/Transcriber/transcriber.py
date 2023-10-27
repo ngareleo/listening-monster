@@ -13,7 +13,7 @@ class Transcriber:
     @Logger.log
     def transcribe(self, splitter: AudioSplitter, *args):
         chunks: list[AudioSegment] = splitter.load_chunks()
-        res = err = BLANK
+        err_message = BLANK
         if not chunks:
             Logger.warn("No chunks found")
             return
@@ -22,14 +22,14 @@ class Transcriber:
             audio_chunk.export(
                 "temp", format="wav"
             )  # this could be causing a performance bottleneck if its writting to ROM instead of RAM
+
             with sr.AudioFile("temp") as source:
                 audio = self.r.listen(source)
                 try:
                     google_txt = self.r.recognize_google(audio)
-                    res.join([f" [{i}]{google_txt}"])
+                    print(f" [{i}]{google_txt}", end=" ")
                 except Exception as ex:
-                    res.join([f"<<[e{i}]>>"])
-                    err.join([f"{ex}\n"])
+                    print(f"<<[e{i}]>>", end=" ")
+                    err_message += f"{ex}\n"
 
-        Logger.info(res)
-        Logger.warn(err)
+        Logger.warn(err_message)
