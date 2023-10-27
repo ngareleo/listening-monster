@@ -1,6 +1,6 @@
 import speech_recognition as sr
-from src.Tools.audio_splitter import AudioSplitter
-from src.Tools import Logger, AudioSegment
+from src.tools.audio_splitter import AudioSplitter
+from src.tools import Logger, AudioSegment
 
 MAX_WORKERS = 5
 BLANK = ""

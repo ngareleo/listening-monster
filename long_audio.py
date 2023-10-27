@@ -1,5 +1,5 @@
-from src.Transcriber.transcriber import Transcriber
-from src.Tools import Logger, TimebasedAudioSplitter
+from src.engine import Transcriber
+from src.tools import Logger, TimebasedAudioSplitter
 
 if __name__ == "__main__":
     fn = "./samples/mp3/sample01.mp3"
