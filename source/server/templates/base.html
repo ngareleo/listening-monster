@@ -1,17 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% block head %}
     <link rel="stylesheet" href="style.css" />
     <title>{% block title %}{% endblock %}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
     {% endblock %}
 </head>
-<body>
-    <div id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">
+
+<body hx-boost="true" >
+    <header>
+        <a href={{url_for("index.hello_traveller")}} class="logo">Index</a>
+        <ul>
+            <li>
+                {% if g.user %}
+                <a href={{url_for("auth.login")}}>Change account</a>
+                {% else %}
+                <a href={{url_for("auth.login")}}>Change account</a>
+                {% endif %}
+            </li>
+            <li>
+                <a href={{url_for("auth.register")}}>Register</a>
+            </li>
+        </ul>
+        <a href={{url_for("auth.logout")}}>Logout</a>
+    </header>
+
+    <main>
+        <div id="content">{% block content %}{% endblock %}</div>
+    </main>
+    
+    <footer>
         {% block footer %}
-        &copy; Copyright 2008 by <a href="http://domain.invalid/">you</a>.
+        <a href="https://github.com/ngareleo/listening-monster" target="_blank">Github</a>
         {% endblock %}
-    </div>
+    </footer>
+
 </body>
+
 </html>
