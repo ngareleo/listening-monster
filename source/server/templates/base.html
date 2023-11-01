@@ -7,39 +7,39 @@
     <title>{% block title %}{% endblock %}</title>
     <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            padding: 0;
+            box-sizing: border-box;
+            margin: 0;
+        }
+    </style>
     {% endblock %}
 </head>
 
-<body hx-boost="true" >
-    <header>
-        <a href={{url_for("index.hello_traveller")}} class="logo">Index</a>
-        <ul>
+<body hx-boost="true" class="container h-full w-full" >
+    <header class="container flex w-100 justify-between items-center">
+        <a href={{url_for("index.hello_traveller")}} class="text-center text-lg font-semibold">((Listening))<br />&lt;&lt;Monster&gt;&gt;</a>
+        <ul class="flex">
             <li>
-                {% if g.user %}
-                <a href={{url_for("auth.login")}}>Change account</a>
-                {% else %}
-                <a href={{url_for("auth.login")}}>Change account</a>
-                {% endif %}
+                <a href={{url_for("auth.register")}}>{{g.username}}</a>
             </li>
             <li>
-                <a href={{url_for("auth.register")}}>Register</a>
+                <a href={{url_for("auth.logout")}}>Logout</a>
             </li>
         </ul>
-        <a href={{url_for("auth.logout")}}>Logout</a>
     </header>
 
-    <main>
-        {% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-        {% endfor %}
-        <div id="content">{% block content %}{% endblock %}</div>
-    </main>
+    <div class="container flex w-full h-1/2 bg-rose-200">
+        <div id="content" class="w-full h-full " >{% block content %}{% endblock %}</div>
+    </div>
     
     <footer>
         {% block footer %}
         <a href="https://github.com/ngareleo/listening-monster" target="_blank">Github</a>
         {% endblock %}
     </footer>
+
 
 </body>
 
