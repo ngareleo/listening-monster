@@ -1,8 +1,8 @@
-{% extends "base.html" %} {% block title %}Upload{% endblock %} {% block head %}
-{{ super() }} {% endblock %} {% block content %}
-<form id="form" hx-encoding="multipart/form-data" hx-post={{url_for("upload.index")}}>
+{% from "components/button.html" import secondary %}
+
+<form id="form" hx-encoding="multipart/form-data" hx-post={{url_for("upload.index")}} class="flex">
   <input type="file" name="audio" />
-  <button>Upload</button>
+  {{secondary("Upload video")}}
   <progress id="progress" value="0" max="100"></progress>
 </form>
 <script>
@@ -12,4 +12,3 @@
       .setAttribute("value", (evt.detail.loaded / evt.detail.total) * 100);
   });
 </script>
-{% endblock %}

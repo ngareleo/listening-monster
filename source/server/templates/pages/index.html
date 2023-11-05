@@ -1,11 +1,7 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block head %}
 {{ super() }} {% endblock %} {% block content %}
-<div class="container flex bg-amber-400">
-  <div class="w-1/2 h-20 bg-rose-200">
-    {% include "sections/left-nav.html"%}
-  </div>
-  <div class="w-1/2 h-30 bg-green-200">
-    {% include "sections/right-nav.html"%}
-  </div>
+<div class="container flex">
+  <div class="w-1/2 h-auto">{% include "sections/left-nav.html"%}</div>
+  <div class="w-1/2 h-30">{% include "sections/right-nav.html"%}</div>
 </div>
 {% endblock %}

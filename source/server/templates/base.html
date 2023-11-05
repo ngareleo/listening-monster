@@ -17,8 +17,8 @@
     {% endblock %}
 </head>
 
-<body hx-boost="true" class="container h-full w-full" >
-    <header class="container flex w-100 justify-between items-center">
+<body hx-boost="true" class="container h-full w-full flex flex-col gap-y-10 items-center" >
+    <header class="flex w-full justify-between items-center">
         <a href={{url_for("index.hello_traveller")}} class="text-center text-lg font-semibold">((Listening))<br />&lt;&lt;Monster&gt;&gt;</a>
         <ul class="flex">
             <li>
@@ -29,18 +29,14 @@
             </li>
         </ul>
     </header>
-
-    <div class="container flex w-full h-1/2 bg-rose-200">
+    <div class="container flex w-full h-auto">
         <div id="content" class="w-full h-full " >{% block content %}{% endblock %}</div>
-    </div>
-    
+    </div>  
     <footer>
         {% block footer %}
         <a href="https://github.com/ngareleo/listening-monster" target="_blank">Github</a>
         {% endblock %}
     </footer>
-
-
 </body>
 
 </html>
