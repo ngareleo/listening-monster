@@ -2,8 +2,13 @@
   @Params {label -> The label to display}
 -->
 {% macro secondary(label) -%}
-<button class="px-6 py-12">{{name}}</button>
+<button
+  class="px-2 py-3 border-2 rounded-lg border-slate-300 text-black bg-slate-white"
+>
+  {{label}}
+</button>
 {%- endmacro %}
+
 <!--
   @Params {label -> The label to display}
 -->
