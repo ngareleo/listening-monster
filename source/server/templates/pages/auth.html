@@ -1,0 +1,4 @@
+{% import "components/input.html" as forms %} {% extends "base.html" %} {% block
+title %}Login{% endblock %} {% block head %} {{ super() }} {% endblock %} {%
+block content %} {% if login %} {% include "sections/login.html"%} {%else%}{%
+include "sections/register.html"%} {%endif%} {% endblock %}
