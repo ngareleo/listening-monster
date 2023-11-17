@@ -6,6 +6,7 @@ from source.server.utils import TemplateRules
 bp = Blueprint("index", __name__, url_prefix="/")
 
 
+@TemplateRules.returns_page
 @bp.route("/", methods=("GET", "POST"))
 def hello_traveller():
     if request.method == "GET":

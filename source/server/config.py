@@ -1,9 +1,19 @@
 import os
-from flask import Flask
 
 
 class BaseConfig(object):
-    SECRET_KEY = "dev"
-
     def __init__(self, instance_path: str) -> None:
-        BaseConfig.DATABASE = os.path.join(instance_path, "app.sqlite")
+        BaseConfig.SECRET_KEY = "dev"
+        BaseConfig.DATABASE = f"sqlite:///{os.path.join(instance_path, "app.sqlite")}"
+
+
+class DevelopmentConfig(BaseConfig):
+    def __init__(self, instance_path: str) -> None:
+        DevelopmentConfig.SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(instance_path, "app.sqlite")}"
+        super().__init__(instance_path)
+
+
+class ProductionConfig(BaseConfig):
+    def __init__(self, instance_path: str) -> None:
+        DevelopmentConfig.SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(instance_path, "app.sqlite")}"
+        super().__init__(instance_path)

@@ -1,20 +1,33 @@
-from flask import Flask
+from flask import Flask, g
+from sqlalchemy.orm import DeclarativeBase
+from flask_sqlalchemy import SQLAlchemy
 import os
 
 
+class Base(DeclarativeBase):
+    pass
+
+
+db = SQLAlchemy(model_class=Base)
+
+
 def create_app(test_config=None):
-    from .db import init_app
     from .routes.auth import bp as auth_bp
     from .routes.index import bp as index_bp
     from .routes.upload import bp as upload_bp
-    from .config import BaseConfig
+    from .config import DevelopmentConfig, ProductionConfig
+
+    config = None
 
     app = Flask(__name__)
+    if app.debug:
+        config = DevelopmentConfig(instance_path=app.instance_path)
+    else:
+        config = ProductionConfig(instance_path=app.instance_path)
 
-    config = BaseConfig(instance_path=app.instance_path)
     app.config.from_object(config)
 
-    init_app(app)
+    db.init_app(app)
 
     if test_config is None:
         app.config.from_pyfile(

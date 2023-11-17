@@ -1,5 +1,6 @@
 from flask import Blueprint, current_app, flash, render_template, request, url_for
 from ..utils import TemplateRules, login_required
+from werkzeug.utils import secure_filename
 
 
 bp = Blueprint("upload", __name__, url_prefix="/upload")
@@ -26,6 +27,7 @@ def index():
         if not title or not description or not f:
             return TemplateRules.render_html_segment("audio/audio-upload")
 
+        filename = secure_filename(title)
         location = f"/audio/{f.filename}"
         f.save(f"{current_app.static_folder}/{location}")
         flash("Image uploaded successfully 💾")

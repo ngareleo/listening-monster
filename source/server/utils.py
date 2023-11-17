@@ -38,5 +38,5 @@ class TemplateRules:
 
     @classmethod
     def returns_page(cls, func):
-        """Just for clarity that this route returns entire HTML pages only via HTMX"""
+        """Just for clarity that this route returns entire HTML pages"""
         return func
