@@ -1,0 +1,13 @@
+<!--
+  @Params {location -> The location of the audio file}
+-->
+
+<figure>
+  <figcaption>Here's your audio file</figcaption>
+  <div class="flex items-center">
+    <audio controls src="{{location}}">
+      <a href="{{location}}"> Download audio </a>
+    </audio>
+    <button><img src={{url_for('static', 'icons/remove.svg')}}/></button>
+  </div>
+</figure>

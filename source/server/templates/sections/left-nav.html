@@ -19,11 +19,18 @@
     </table>
   </div>
 
-  <form action={{url_for("upload.index")}} method="post" class="border rounded-md flex flex-col gap-y-5 w-full p-5">
-    {{forms.input("title", title="Title", placeholder="Enter title")}}
-    {{forms.input("description", title="Description", placeholder="Enter description for audio file")}}
-    {% include "components/audio/upload_audio.html" %}
-    <button type="button" class="w-1/2 bg-rose-200 rounded-md p-2.5 text-gray-700">Add to library</button>
-  </form>
-</div>
+  <div>
+    <form id="audio-upload" hx-encoding="multipart/form-data" hx-post={{url_for("upload.index")}}
+      class="border rounded-md flex flex-col gap-y-5 w-3/4 p-5 max-w-md">
+      {{forms.input("title", title="Title", placeholder="Enter title")}}
+      {{forms.input("description", title="Description", placeholder="Enter description for audio file")}}
+      <input type="file" name="audio" class="file:mr-4 file:py-2 file:px-4
+  file:rounded-full file:border-0
+  file:text-sm file:font-semibold
+  file:bg-violet-50 file:text-violet-700" />
+      <input type="submit" value="Add to library" form="audio-upload"
+        class="px-2 py-3 border-2 rounded-[30px] border-slate-300 text-black bg-slate-white text-sm" />
+    </form>
+  </div>
 
+</div>
