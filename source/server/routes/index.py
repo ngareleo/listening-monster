@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, g
 
+from source.server.utils import TemplateRules
+
 
 bp = Blueprint("index", __name__, url_prefix="/")
 
@@ -8,6 +10,6 @@ bp = Blueprint("index", __name__, url_prefix="/")
 def hello_traveller():
     if request.method == "GET":
         if g.user:
-            return render_template("pages/index.html")
-        return render_template("pages/auth.html", login=True)
+            return TemplateRules.render_html_page("index")
+        return TemplateRules.render_html_page("auth", login=True)
     return "sent"

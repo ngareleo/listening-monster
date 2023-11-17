@@ -7,11 +7,12 @@ def create_app(test_config=None):
     from .routes.auth import bp as auth_bp
     from .routes.index import bp as index_bp
     from .routes.upload import bp as upload_bp
+    from .config import BaseConfig
 
     app = Flask(__name__)
-    app.config.from_mapping(
-        SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "app.sqlite")
-    )
+
+    config = BaseConfig(instance_path=app.instance_path)
+    app.config.from_object(config)
 
     init_app(app)
 
@@ -30,5 +31,4 @@ def create_app(test_config=None):
     app.register_blueprint(auth_bp)
     app.register_blueprint(index_bp)
     app.register_blueprint(upload_bp)
-
     return app
