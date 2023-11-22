@@ -44,7 +44,6 @@ def register():
             flash("Email is required")
 
         if passwords_identical and username and password and email:
-            db = get_db()
             try:
                 user = User()
                 user.username = username

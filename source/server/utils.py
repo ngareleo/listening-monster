@@ -1,8 +1,5 @@
 import functools
 from flask import g, redirect, render_template, url_for
-from sqlalchemy import select
-
-from source.server.models.user import User
 
 
 def login_required(view):

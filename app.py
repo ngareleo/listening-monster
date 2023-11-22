@@ -1,1 +1,1 @@
-from source.server import *
+from source.server import create_app
