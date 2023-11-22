@@ -1,14 +1,25 @@
-from flask import Flask, g
-from sqlalchemy.orm import DeclarativeBase
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 
+from sqlalchemy.orm import DeclarativeBase
+from datetime import datetime
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import DateTime
+from flask_alembic import Alembic
+
 
 class Base(DeclarativeBase):
-    pass
+    date_added: Mapped[datetime] = mapped_column(
+        DateTime, insert_default=datetime.now(), deferred=True
+    )
+    last_modified: Mapped[datetime] = mapped_column(
+        DateTime, insert_default=datetime.now(), deferred=True
+    )
 
 
 db = SQLAlchemy(model_class=Base)
+alembic = Alembic()
 
 
 def create_app(test_config=None):
@@ -28,6 +39,7 @@ def create_app(test_config=None):
     app.config.from_object(config)
 
     db.init_app(app)
+    alembic.init_app(app)
 
     if test_config is None:
         app.config.from_pyfile(

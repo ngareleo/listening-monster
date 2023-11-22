@@ -8,7 +8,7 @@ from flask import (
     url_for,
 )
 from sqlalchemy import select
-from source.server.models.user import User
+from source.server.models import User
 from source.server.utils import TemplateRules
 from ..db import get_db
 
