@@ -44,4 +44,8 @@ def create_app(test_config=None):
     app.register_blueprint(auth_bp)
     app.register_blueprint(index_bp)
     app.register_blueprint(upload_bp)
+
+    with app.app_context():
+        db.create_all()
+
     return app

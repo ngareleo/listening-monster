@@ -1,5 +1,5 @@
-from flask import g
+from source.server import db
 
 
 def get_db():
-    return g.db
+    return db

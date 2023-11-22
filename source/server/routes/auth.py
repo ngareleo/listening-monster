@@ -7,23 +7,20 @@ from flask import (
     session,
     url_for,
 )
-from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy import select
+from source.server.models.user import User
 from source.server.utils import TemplateRules
 from ..db import get_db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+db = get_db()
 
 
 @bp.before_app_request
 def load_logged_in_user():
     user_id = session.get("user_id")
-    g.user = (
-        get_db()
-        .execute("SELECT * FROM user WHERE id = ?", [int(user_id)])
-        .fetchone()  # guranteed this will never fail
-        if user_id
-        else None
-    )
+    user = db.session.scalars(select(User).where(User.id == user_id)).first()
+    g.user = user
 
 
 @TemplateRules.returns_page
@@ -32,6 +29,7 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        email = request.form["email"]
         confirm_password = request.form["confirm-password"]
         passwords_identical = password == confirm_password
 
@@ -40,18 +38,21 @@ def register():
 
         if not username:
             flash("Username is required")
-
         elif not password:
             flash("Password is required")
+        elif not email:
+            flash("Email is required")
 
-        if passwords_identical and username and password:
+        if passwords_identical and username and password and email:
             db = get_db()
             try:
-                db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
-                )
-                db.commit()
+                user = User()
+                user.username = username
+                user.password = password
+                user.email = email
+                db.session.add(user)
+                db.session.commit()
+
             except db.IntegrityError:
                 flash(f"User {username} is already taken")
             else:
@@ -73,21 +74,20 @@ def login():
         elif not password:
             flash("Password is required")
 
-        db = get_db()
         user = None
         try:
-            user = db.execute(
-                "SELECT * FROM user WHERE username = ?", [username]
-            ).fetchone()
+            user = db.session.scalars(
+                select(User).where(User.username == username)
+            ).first()
         except Exception as e:
             print(e)
         if not user:
             flash("Incorrect username")
-        elif not check_password_hash(user["password"], password):
+        elif not user.verify_password(password):
             flash("Incorrect password")
         else:
             session.clear()
-            session["user_id"] = user["id"]
+            session["user_id"] = user.id
             return redirect(url_for("index.hello_traveller"))
 
     return TemplateRules.render_html_page("auth.html", login=True)
