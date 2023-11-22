@@ -15,5 +15,5 @@ class DevelopmentConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     def __init__(self, instance_path: str) -> None:
-        DevelopmentConfig.SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(instance_path, "app.sqlite")}"
+        ProductionConfig.SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(instance_path, "app.sqlite")}"
         super().__init__(instance_path)

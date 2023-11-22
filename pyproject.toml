@@ -10,10 +10,9 @@ readme = "README.md"
 python = "^3.12"
 audiosegment = "^0.23.0"
 flask = "^3.0.0"
-sqlalchemy = "^2.0.23"
 speechrecognition = "^3.10.0"
 flask-sqlalchemy = "^3.1.1"
-flask-alembic = "^2.0.1"
+flask-migrate = "^4.0.5"
 
 
 [build-system]

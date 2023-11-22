@@ -2,22 +2,27 @@
     For launching the app on vscode
 */
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Python: Flask",
-            "type": "python",
-            "request": "launch",
-            "module": "flask",
-            "env": {
-                "FLASK_APP": "app.py",
-                "FLASK_DEBUG": "1"
-            },
-            "args": [
-                "run",
-            ],
-            "jinja": true,
-            "justMyCode": true
-        },
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Flask",
+      "type": "python",
+      "request": "launch",
+      "module": "flask",
+      "env": {
+        "FLASK_APP": "app.py",
+        "FLASK_DEBUG": "1"
+      },
+      "args": ["run"],
+      "jinja": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Alembic add rev",
+      "type": "python",
+      "request": "launch",
+      "module": "flask",
+      "args": ["db", "upgrade"]
+    }
+  ]
 }

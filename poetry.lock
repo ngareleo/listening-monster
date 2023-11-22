@@ -208,21 +208,20 @@ async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
 
 [[package]]
-name = "flask-alembic"
-version = "2.0.1"
-description = "Flask extension to integrate Alembic migrations"
+name = "flask-migrate"
+version = "4.0.5"
+description = "SQLAlchemy database migrations for Flask applications using Alembic."
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 files = [
-    {file = "Flask-Alembic-2.0.1.tar.gz", hash = "sha256:05a1e6f4148dbfcc9280a393373bfbd250af6f9f4f0ca9f744ef8f7376a3deec"},
-    {file = "Flask_Alembic-2.0.1-py2.py3-none-any.whl", hash = "sha256:7e67740b0b08d58dcae0c701d56b56e60f5fa4af907bb82b4cb0469229ba94ff"},
+    {file = "Flask-Migrate-4.0.5.tar.gz", hash = "sha256:d3f437a8b5f3849d1bb1b60e1b818efc564c66e3fefe90b62e5db08db295e1b1"},
+    {file = "Flask_Migrate-4.0.5-py3-none-any.whl", hash = "sha256:613a2df703998e78716cace68cd83972960834424457f5b67f56e74fff950aef"},
 ]
 
 [package.dependencies]
-alembic = ">=0.8"
-Flask = ">=0.10"
-Flask-SQLAlchemy = "*"
-SQLAlchemy = "*"
+alembic = ">=1.9.0"
+Flask = ">=0.9"
+Flask-SQLAlchemy = ">=1.0"
 
 [[package]]
 name = "flask-sqlalchemy"
@@ -677,4 +676,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "9a397b669a4c21bb97f2e0806c69494bf2b45baea9a72224abde09cdef257753"
+content-hash = "f03c4a81ecc64e607e4c4ea107eecb72a4f4b63cb6b8334a444f1a34bb8a53e2"
