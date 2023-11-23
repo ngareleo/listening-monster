@@ -2,6 +2,6 @@
   <h1>Please confirm these details</h1>
   <p>{{title}}</p>
   <p>{{description}}</p>
-  {% include "components/audio/play-audio.html"%}
+  {% include "components/audio/play-audio.html" ignore missing with context %}
   <button hx-post={{url_for("upload.confirm")}}>Add to library</button>
 </div>

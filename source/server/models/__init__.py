@@ -1,11 +1,23 @@
+from operator import le
 from typing import NoReturn, List
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import DateTime
+from datetime import datetime
 from source.server import db
 
 
-class User(db.Model):
+class Base:
+    date_added: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(), deferred=True
+    )
+    last_modified: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(), deferred=True
+    )
+
+
+class User(db.Model, Base):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -26,26 +38,27 @@ class User(db.Model):
         return check_password_hash(self._password_hash, password)
 
     def __str__(self) -> str:
-        return f"< User {self.username} >"
+        return f"<User {self.username}>"
 
 
-class Audio(db.Model):
+class Audio(db.Model, Base):
     __tablename__ = "audio"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    _label: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    label: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=False)
+    _length: Mapped[int] = mapped_column(Float, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     owner: Mapped["User"] = relationship(back_populates="audios")
 
     @property
-    def label(self) -> str:
-        return self._label
+    def length(self) -> str:
+        # Get the length in HH:MM format from minutes
+        return f"{self._length//60}:{self._length%60}"
 
-    @label.setter
-    def label(self, lbl: str) -> None:
-        # if user has used label before we get an integrity error
-        self._label = f"{lbl}"
+    @length.setter
+    def length(self, length: int) -> None:
+        self._length = length
 
     def __str__(self) -> str:
-        return f"< Audio {self._label} >"
+        return f"<Audio {self.label}>"

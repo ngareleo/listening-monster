@@ -2,20 +2,11 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import os
-
 from sqlalchemy.orm import DeclarativeBase
-from datetime import datetime
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import DateTime
 
 
 class Base(DeclarativeBase):
-    date_added: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.now(), deferred=True
-    )
-    last_modified: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.now(), deferred=True
-    )
+    pass
 
 
 db = SQLAlchemy(model_class=Base)

@@ -1,6 +1,7 @@
-from flask import Blueprint, current_app, flash, render_template, request, url_for
-from ..utils import TemplateRules, login_required
 from werkzeug.utils import secure_filename
+from flask import Blueprint, current_app, flash, render_template, request, url_for, g
+from source.server.models import Audio, User
+from ..utils import TemplateRules, login_required
 
 
 bp = Blueprint("upload", __name__, url_prefix="/upload")
@@ -13,6 +14,7 @@ def index():
     """
     This route returns html segments exclusively"""
     if request.method == "POST":
+        user: User = g.user
         title = request.form.get("title")
         description = request.form.get("description")
         f = request.files.get("audio")
@@ -26,9 +28,11 @@ def index():
 
         if not title or not description or not f:
             return TemplateRules.render_html_segment("audio/audio-upload")
-
-        filename = secure_filename(title)
-        location = f"/audio/{f.filename}"
+        audio = Audio()
+        audio.label = title
+        audio
+        filename = f"{user.username}_{secure_filename(title)}"
+        location = f"/audio/{filename}"
         f.save(f"{current_app.static_folder}/{location}")
         flash("Image uploaded successfully 💾")
 

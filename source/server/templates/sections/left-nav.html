@@ -11,9 +11,11 @@
       </thead>
       <tbody>
         <tr>
-          <td class="py-2 border border-slate-200 p-2">Audio 1</td>
-          <td class="border border-slate-200 p-2">1h 20min</td>
-          <td class="border border-slate-200 p-2">12/08/2023</td>
+          {% for audio in audios%}
+          <td class="py-2 border border-slate-200 p-2">{{audio.label}}</td>
+          <td class="border border-slate-200 p-2">{{audio.length}}</td>
+          <td class="border border-slate-200 p-2">{{audio.last_modified}}</td>
+          {% endfor %}
         </tr>
       </tbody>
     </table>
