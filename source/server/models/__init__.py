@@ -1,11 +1,21 @@
 from typing import NoReturn, List
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import Float, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from source.server import sql_instance
+from sqlalchemy.orm import DeclarativeBase
+from datetime import datetime
+
+class Base():
+    date_added: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(), deferred=True
+    )
+    last_modified: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(), deferred=True
+    )
 
 
-class User(sql_instance.Model):
+class User(sql_instance.Model, Base):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -29,23 +39,25 @@ class User(sql_instance.Model):
         return f"<User {self.username}>"
 
 
-class Audio(sql_instance.Model):
+class Audio(sql_instance.Model, Base):
     __tablename__ = "audio"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    _label: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    label: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=False)
+    _length: Mapped[int] = mapped_column(Float, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     owner: Mapped["User"] = relationship(back_populates="audios")
 
     @property
-    def label(self) -> str:
-        return self._label
+    def length(self) -> str:
+        # Get the length in HH:MM format from minutes
+        return f"{self._length//60}:{self._length%60}"
 
-    @label.setter
-    def label(self, lbl: str) -> None:
-        # if user has used label before we get an integrity error
-        self._label = lbl
+    @length.setter
+    def length(self, length: int) -> None:
+        self._length = length
 
     def __str__(self) -> str:
-        return f"<Audio {self._label}>"
+        return f"<Audio {self.label}>"
+    

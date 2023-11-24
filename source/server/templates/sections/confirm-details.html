@@ -1,7 +1,16 @@
+<!--
+  title: str  // user set title
+  description: str // user description
+  location: str // the audio static filepath
+-->
+
 <div>
-  <h1>Please confirm these details</h1>
+  <div class="flex items-center space-between">
+    <h1>Please confirm these details</h1>
+    <button hx-get="">Back</button>
+  </div>
   <p>{{title}}</p>
   <p>{{description}}</p>
-  {% include "components/audio/play-audio.html"%}
+  {% include "components/audio/play-audio.html" ignore missing with context %}
   <button hx-post={{url_for("upload.confirm")}}>Add to library</button>
 </div>
