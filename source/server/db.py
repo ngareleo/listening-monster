@@ -1,5 +1,5 @@
-from source.server import db
+from source.server import sql_instance
 
 
 def get_db():
-    return db
+    return sql_instance

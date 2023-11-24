@@ -2,10 +2,10 @@ from typing import NoReturn, List
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
-from source.server import db
+from source.server import sql_instance
 
 
-class User(db.Model):
+class User(sql_instance.Model):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -26,10 +26,10 @@ class User(db.Model):
         return check_password_hash(self._password_hash, password)
 
     def __str__(self) -> str:
-        return f"< User {self.username} >"
+        return f"<User {self.username}>"
 
 
-class Audio(db.Model):
+class Audio(sql_instance.Model):
     __tablename__ = "audio"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -45,7 +45,7 @@ class Audio(db.Model):
     @label.setter
     def label(self, lbl: str) -> None:
         # if user has used label before we get an integrity error
-        self._label = f"{lbl}"
+        self._label = lbl
 
     def __str__(self) -> str:
-        return f"< Audio {self._label} >"
+        return f"<Audio {self._label}>"

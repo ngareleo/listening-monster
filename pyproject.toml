@@ -18,7 +18,3 @@ flask-migrate = "^4.0.5"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-dev = "flask run --debug"
-
