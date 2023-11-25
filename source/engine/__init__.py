@@ -1,3 +1,3 @@
-from utils import *
-from tools import *
-from transcriber import *
+from .utils import *
+from .tools import *
+from .transcriber import *

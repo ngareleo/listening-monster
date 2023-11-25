@@ -1,5 +1,19 @@
+import os
 import functools
 from flask import g, redirect, render_template, url_for
+
+
+def ensure_required_directories_exists(dirs: dict[str, str]):
+    for k, v in dirs.items():
+        print(f"[Log] Initialising {k}", end=" ")
+        if os.path.exists(v):
+            print(f"{k} found in location: {v}")
+        else:
+            try:
+                print(f"Initializing {k} in location {v}")
+                os.makedirs(v)
+            except OSError as e:
+                print(f"Error {e} occurred")
 
 
 def login_required(view):

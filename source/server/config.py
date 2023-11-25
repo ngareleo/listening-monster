@@ -1,9 +1,12 @@
 import os
+from dotenv import load_dotenv
 
 
 class BaseConfig(object):
     def __init__(self, instance_path: str) -> None:
+        load_dotenv(os.path.join(instance_path, ".env"))
         BaseConfig.SECRET_KEY = "dev"
+        BaseConfig.AXIOM_API_KEY = os.getenv("AXIOM_API_KEY")
         BaseConfig.DATABASE = f"sqlite:///{os.path.join(instance_path, "app.sqlite")}"
 
 

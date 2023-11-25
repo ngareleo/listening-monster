@@ -8,20 +8,24 @@ from datetime import datetime
 
 class Base:
     date_added: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.now(), deferred=True
+        "date_added", DateTime, default=datetime.now(), deferred=True
     )
     last_modified: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.now(), deferred=True
+        "last_modified", DateTime, default=datetime.now(), deferred=True
     )
 
 
 class User(sql_instance.Model, Base):
     __tablename__ = "user"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-    email: Mapped[str] = mapped_column(String, unique=True)
-    _password_hash: Mapped[str] = mapped_column(String, nullable=False)
+    id: Mapped[int] = mapped_column("id", Integer, primary_key=True)
+    username: Mapped[str] = mapped_column(
+        "username", String, unique=True, nullable=False
+    )
+    email: Mapped[str] = mapped_column("email", String, unique=True)
+    _password_hash: Mapped[str] = mapped_column(
+        "_password_hash", String, nullable=False
+    )
     audios: Mapped[List["Audio"]] = relationship(back_populates="owner")
 
     @property
@@ -42,21 +46,22 @@ class User(sql_instance.Model, Base):
 class Audio(sql_instance.Model, Base):
     __tablename__ = "audio"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    label: Mapped[str] = mapped_column(String, nullable=False)
-    description: Mapped[str] = mapped_column(String, nullable=False)
-    _length: Mapped[float] = mapped_column(Float, nullable=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    id: Mapped[int] = mapped_column("id", Integer, primary_key=True)
+    label: Mapped[str] = mapped_column("label", String, nullable=False)
+    description: Mapped[str] = mapped_column("description", String, nullable=False)
+    _length: Mapped[int] = mapped_column("_length", Integer, nullable=False)
+    user_id: Mapped[int] = mapped_column("user_id", ForeignKey("user.id"))
     owner: Mapped["User"] = relationship(back_populates="audios")
-    uid: Mapped[str] = mapped_column(String, nullable=False, unique=True, name="")
+    uid: Mapped[str] = mapped_column("uid", String, nullable=False, unique=True)
 
     @property
     def length(self) -> str:
-        # Get the length in HH:MM format from minutes
-        return f"{self._length//60}:{self._length%60}"
+        # Get the length in HH:MM:SS format from minutes
+        return f"{self._length//3600}:{self._length//60}:{self._length%3600}"
 
     @length.setter
-    def length(self, length: float) -> None:
+    def length(self, length: int) -> None:
+        """Length in secs"""
         self._length = length
 
     def __str__(self) -> str:

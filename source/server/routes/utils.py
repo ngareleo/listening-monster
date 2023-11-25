@@ -1,5 +1,12 @@
 from dataclasses import dataclass
+from threading import Timer
 from source.server.models import User
+
+
+def stop_timer(t: Timer):
+    if t.finished:
+        return
+    t.cancel()
 
 
 @dataclass

@@ -1,5 +1,5 @@
-from cProfile import label
 import os
+from sqlite3 import IntegrityError
 from threading import Timer
 from uuid import uuid4
 from flask import (
@@ -28,7 +28,7 @@ def delete_file_from_path(file: str):
 
 
 bp = Blueprint("upload", __name__, url_prefix="/upload")
-file_managing_thread = Timer(60.0 * 20, delete_file_from_path)  # needs to attain a lock
+pending_threads: dict[str, Timer] = {}
 
 
 @TemplateRules.returns_segement
@@ -47,21 +47,26 @@ def index():
             flash("Audio file title is required")
         if not description:
             flash("Please add description for audio file")
-        if not f:
+        if not f or not f.filename:
             flash("Audio file is required")
 
         if not title or not description or not f:
             return TemplateRules.render_html_segment("audio/audio-upload")
 
-        is_title_used = audio_exists_in_db()
+        is_title_used = audio_exists_in_db(user_id=user.id, title=title)
 
         if is_title_used:
             flash("Label provided has been used before")
             return TemplateRules.render_html_segment(
-                "audio/audio-upload"
+                "audio-upload"
             )  # TODO: Add value details to render with pre-filled data
 
-        filename = generate_uid()
+        if not f.filename or not f.filename.endswith(".mp3"):
+            flash("File is missing extension")
+            return TemplateRules.render_html_segment("audio-segment")
+
+        file_ext = f.filename.split(".").pop()
+        filename = f"{generate_uid()}.{file_ext}"
         if not current_app.static_folder:
             return "Something went wrong back here", 500
 
@@ -71,10 +76,14 @@ def index():
             f.save(server_location)
 
             # Remove the audio file after 5 min on a separate thread
-            file_managing_thread.args = server_location
+            file_managing_thread = Timer(
+                60.0 * 1, delete_file_from_path, (server_location,)
+            )
             file_managing_thread.start()
+            file_managing_thread.name = filename
+            pending_threads[server_location] = file_managing_thread
 
-        session["upload"] = {"id": filename, "label": label, "description": description}
+        session["upload"] = {"id": filename, "label": title, "description": description}
         return TemplateRules.render_html_segment(
             "confirm-details",
             location=url_for("static", filename=f"audio/{filename}"),
@@ -90,9 +99,9 @@ def index():
 @bp.route("/confirm")
 def confirm_audio_file():
     # This is htmx triggerred so data is always present
-    from source.engine import get_audio_file_length_in_ms
+    from source.engine import get_audio_file_length_in_secs
 
-    if not request.method == "POST":
+    if request.method == "POST":
         return "Bad request", 400
 
     upload = session.get("upload")
@@ -101,7 +110,7 @@ def confirm_audio_file():
         return TemplateRules.render_html_segment("audio-upload")
 
     user: User = g.user
-    title = upload.get("title")
+    title = upload.get("label")
     description = upload.get("description")
     uid = upload.get("id")
 
@@ -111,18 +120,29 @@ def confirm_audio_file():
         uid,
     )
 
-    if os.path.exists(server_location):
-        # The countdown has not finished
-        file_managing_thread.cancel()
+    if not os.path.exists(server_location):
+        flash("Sorry, you delayed confirmation. Go back to reupload")
+        return TemplateRules.render_html_segment("audio-upload")
+
+    pending_threads[server_location].cancel()
+    pending_threads.pop(
+        server_location,
+    )
 
     audio = Audio()
     audio.label = title
     audio.description = description
     audio.user_id = user.id
-    audio.length = get_audio_file_length_in_ms(server_location) / (1000 * 60)
+    audio.uid = uid
+    audio.length = get_audio_file_length_in_secs(server_location)
 
     db.session.add(audio)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError as ie:
+        flash("Sorry something went wrong")
+        print(ie.sqlite_errorname)
+        return TemplateRules.render_html_segment("audio-upload")
 
     flash("Image uploaded successfully 💾")
     return TemplateRules.render_html_segment("left-nav")
@@ -136,10 +156,20 @@ def return_to_upload_page():
 
 
 def audio_exists_in_db(
+    user_id: int,
     title: str,
-) -> bool: 
+) -> bool:
     """Returns True is the audio file is recorded in db"""
-    return db.session.scalars(select(Audio).where(Audio.label == title)) is not None
+
+    return (
+        db.session.scalars(
+            select(Audio)
+            .join(Audio.owner)
+            .where(User.id == user_id)
+            .where(Audio.label == title)
+        ).first()
+        is not None
+    )
 
 
 def generate_uid() -> str:
@@ -148,12 +178,10 @@ def generate_uid() -> str:
     while not is_unique:
         is_unique = (
             uid is not None
-            and db.session.scalars(
-                select(Audio).where(Audio.uid == str(uid.bytes))
-            ).first()
+            and db.session.scalars(select(Audio).where(Audio.uid == str(uid))).first()
             is None
         )
         if not is_unique:
             uid = uuid4()
 
-    return str(uid.bytes)
+    return str(uid)
