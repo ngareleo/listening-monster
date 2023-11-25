@@ -1,5 +1,19 @@
+import os
 import functools
 from flask import g, redirect, render_template, url_for
+
+
+def ensure_required_directories_exists(dirs: dict[str, str]):
+    for k, v in dirs.items():
+        print(f"[Log] Initialising {k}", end=" ")
+        if os.path.exists(v):
+            print(f"{k} found in location: {v}")
+        else:
+            try:
+                print(f"Initializing {k} in location {v}")
+                os.makedirs(v)
+            except OSError as e:
+                print(f"Error {e} occurred")
 
 
 def login_required(view):
@@ -14,14 +28,12 @@ def login_required(view):
 
 class TemplateRules:
     @classmethod
-    def render_html_segment(cls, loc: str, component=True, **kwargs) -> str:
+    def render_html_segment(cls, loc: str, **kwargs) -> str:
         if loc.startswith("/"):
             loc = loc[1:]
         if loc.endswith(".html"):
             loc = loc[:-5]
-        return render_template(
-            f"components/{loc}.html" if component else f"sections/{loc}.html", **kwargs
-        )
+        return render_template(f"sections/{loc}.html", **kwargs)
 
     @classmethod
     def render_html_page(cls, loc: str, **kwargs) -> str:

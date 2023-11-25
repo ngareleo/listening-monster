@@ -45,10 +45,7 @@ def register():
 
         if passwords_identical and username and password and email:
             try:
-                user = User()
-                user.username = username
-                user.password = password
-                user.email = email
+                user = User(username=username, password=password, email=email)
                 db.session.add(user)
                 db.session.commit()
 

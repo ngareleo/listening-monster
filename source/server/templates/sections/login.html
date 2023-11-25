@@ -1,11 +1,11 @@
 <div class="flex flex-col w-1/2 gap-y-5 max-w-lg">
     <h1 class="text-3xl">Login into your account</h1>
-    <form method="post" action={{url_for("auth.login")}}>
+    <form method="post" action="{{url_for('auth.login')}}">
         <div class="flex flex-col gap-y-3">
             {{forms.input("username", title="Username", placeholder="Enter username")}}
             {{forms.input("password", title="Password", placeholder="Enter password", type="password")}}
             <input type="submit" class="w-full bg-rose-200 rounded-md p-2.5 text-gray-700" value="Login" />
         </div>
     </form>
-    <a href={{url_for("auth.register")}} class="text-sky-800 underline">I don't have an account</a>
+    <a href="{{url_for('auth.register')}}" class="text-sky-800 underline">I don't have an account</a>
 </div>
