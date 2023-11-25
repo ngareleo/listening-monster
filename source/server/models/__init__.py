@@ -3,10 +3,10 @@ from sqlalchemy import Float, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from source.server import sql_instance
-from sqlalchemy.orm import DeclarativeBase
 from datetime import datetime
 
-class Base():
+
+class Base:
     date_added: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.now(), deferred=True
     )
@@ -45,9 +45,10 @@ class Audio(sql_instance.Model, Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     label: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=False)
-    _length: Mapped[int] = mapped_column(Float, nullable=False)
+    _length: Mapped[float] = mapped_column(Float, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     owner: Mapped["User"] = relationship(back_populates="audios")
+    uid: Mapped[str] = mapped_column(String, nullable=False, unique=True, name="")
 
     @property
     def length(self) -> str:
@@ -55,9 +56,8 @@ class Audio(sql_instance.Model, Base):
         return f"{self._length//60}:{self._length%60}"
 
     @length.setter
-    def length(self, length: int) -> None:
+    def length(self, length: float) -> None:
         self._length = length
 
     def __str__(self) -> str:
         return f"<Audio {self.label}>"
-    

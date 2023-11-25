@@ -1,6 +1,6 @@
 <div class="flex flex-col w-1/2 gap-y-5 max-w-lg">
     <h1 class="text-3xl">Create a monster account</h1>
-    <form method="post" action={{url_for("auth.register")}}>
+    <form method="post" action="{{url_for('auth.register')}}">
         <div class="flex flex-col gap-y-3">
             {{forms.input("email", title="Email", placeholder="Enter email", type="email")}}
             {{forms.input("username", title="Username", placeholder="Enter username")}}
@@ -9,5 +9,5 @@
             <input type="submit" class="w-full bg-rose-200 rounded-md p-2.5 text-gray-700" value="Create account" />
         </div>
     </form>
-    <a href={{url_for("auth.login")}} class="text-sky-800 underline">I already have an account</a>
+    <a href="{{url_for('auth.login')}}" class="text-sky-800 underline">I already have an account</a>
 </div>
