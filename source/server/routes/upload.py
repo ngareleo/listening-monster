@@ -53,9 +53,7 @@ def index():
         if not title or not description or not f:
             return TemplateRules.render_html_segment("audio/audio-upload")
 
-        is_title_used = audio_exists_in_db(user_id=user.id, title=title)
-
-        if is_title_used:
+        if audio_exists_in_db(user_id=user.id, title=title):
             flash("Label provided has been used before")
             return TemplateRules.render_html_segment(
                 "audio-upload"
@@ -65,8 +63,7 @@ def index():
             flash("File is missing extension")
             return TemplateRules.render_html_segment("audio-segment")
 
-        file_ext = f.filename.split(".").pop()
-        filename = f"{generate_uid()}.{file_ext}"
+        filename = f"{generate_uid()}.mp3"
         if not current_app.static_folder:
             return "Something went wrong back here", 500
 
@@ -110,7 +107,7 @@ def confirm_audio_file():
         return TemplateRules.render_html_segment("audio-upload")
 
     user: User = g.user
-    title = upload.get("label")
+    label = upload.get("label")
     description = upload.get("description")
     uid = upload.get("id")
 
@@ -129,14 +126,15 @@ def confirm_audio_file():
         server_location,
     )
 
-    audio = Audio()
-    audio.label = title
-    audio.description = description
-    audio.user_id = user.id
-    audio.uid = uid
-    audio.length = get_audio_file_length_in_secs(server_location)
-
+    audio = Audio(
+        label=label,
+        description=description,
+        user_id=user.id,
+        uid=uid,
+        length=get_audio_file_length_in_secs(server_location),
+    )
     db.session.add(audio)
+
     try:
         db.session.commit()
     except IntegrityError as ie:

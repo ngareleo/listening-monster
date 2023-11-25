@@ -1,9 +1,18 @@
 from typing import NoReturn, List
-from sqlalchemy import Float, ForeignKey, Integer, String, DateTime
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey, Integer, String, DateTime
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+    DeclarativeBase,
+)
 from werkzeug.security import generate_password_hash, check_password_hash
-from source.server import sql_instance
 from datetime import datetime
+from source.server import sql_instance
+
+
+class T(DeclarativeBase):
+    pass
 
 
 class Base:
@@ -15,7 +24,7 @@ class Base:
     )
 
 
-class User(sql_instance.Model, Base):
+class User(sql_instance.Model, Base, T):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column("id", Integer, primary_key=True)
@@ -43,7 +52,7 @@ class User(sql_instance.Model, Base):
         return f"<User {self.username}>"
 
 
-class Audio(sql_instance.Model, Base):
+class Audio(sql_instance.Model, Base, T):
     __tablename__ = "audio"
 
     id: Mapped[int] = mapped_column("id", Integer, primary_key=True)
