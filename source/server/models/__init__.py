@@ -16,12 +16,28 @@ class T(DeclarativeBase):
 
 
 class Base:
-    date_added: Mapped[datetime] = mapped_column(
+    _date_added: Mapped[datetime] = mapped_column(
         "date_added", DateTime, default=datetime.now(), deferred=True
     )
-    last_modified: Mapped[datetime] = mapped_column(
+    _last_modified: Mapped[datetime] = mapped_column(
         "last_modified", DateTime, default=datetime.now(), deferred=True
     )
+
+    @property
+    def date_added(self):
+        return self._date_added.strftime("%m/%d/%Y")
+
+    @date_added.setter
+    def date_added(self, date: datetime):
+        self._date_added = date
+
+    @property
+    def last_modified(self):
+        return self._last_modified.strftime("%m/%d/%Y")
+
+    @last_modified.setter
+    def last_modified(self, date: datetime):
+        self._last_modified = date
 
 
 class User(sql_instance.Model, Base, T):
@@ -66,7 +82,16 @@ class Audio(sql_instance.Model, Base, T):
     @property
     def length(self) -> str:
         # Get the length in HH:MM:SS format from minutes
-        return f"{self._length//3600}:{self._length//60}:{self._length%3600}"
+        h = int(self._length // 3600)
+        m = int(self._length // 60)
+        s = int(self._length % 60)
+        return "".join(
+            [
+                f"{h} Hrs " if h > 0 else "",
+                f"{m} Min " if m > 0 else "",
+                f"{s} Secs" if s > 0 else "",
+            ]
+        )
 
     @length.setter
     def length(self, length: int) -> None:

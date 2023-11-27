@@ -19,7 +19,7 @@ def hello_traveller():
             user_audio = db.session.scalars(
                 select(Audio)
                 .where(Audio.user_id == user.id)
-                .order_by(Audio.last_modified)
+                .order_by(Audio._last_modified)
             ).all()
             return TemplateRules.render_html_page("index", audios=user_audio)
         return TemplateRules.render_html_page("auth", login=True)
