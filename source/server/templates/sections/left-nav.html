@@ -8,15 +8,26 @@
         <th class="py-2 border border-slate-200 w-1/4">Title</th>
         <th class="border border-slate-200 w-1/8">Length</th>
         <th class="border border-slate-200">Date Uploaded</th>
+        <th class="border border-slate-200">Actions</th>
       </thead>
       <tbody>
+        {% for audio in audios%}
         <tr>
-          {% for audio in audios%}
           <td class="py-2 border border-slate-200 p-2">{{audio.label}}</td>
           <td class="border border-slate-200 p-2">{{audio.length}}</td>
           <td class="border border-slate-200 p-2">{{audio.last_modified}}</td>
-          {% endfor %}
+          <td class="border border-slate-200 p-2">
+            <button
+              class="bg-slate-800 px-2 py-2 text-white rounded-lg"
+              hx-get="audio/{{audio.uid}}"
+              hx-target="#right-section"
+              hx-swap="outerHTML"
+            >
+              Open
+            </button>
+          </td>
         </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>

@@ -29,6 +29,7 @@ def create_app() -> Flask:
     from .routes.auth import bp as auth_bp
     from .routes.index import bp as index_bp
     from .routes.upload import bp as upload_bp
+    from .routes.audio import bp as audio_bp
     from .config import DevelopmentConfig, ProductionConfig
 
     if app.debug:
@@ -49,6 +50,7 @@ def create_app() -> Flask:
     app.register_blueprint(auth_bp)
     app.register_blueprint(index_bp)
     app.register_blueprint(upload_bp)
+    app.register_blueprint(audio_bp)
 
     with app.app_context():
         sql_instance.create_all()

@@ -63,7 +63,9 @@ def index():
             flash("File is missing extension")
             return TemplateRules.render_html_segment("audio-segment")
 
-        filename = f"{generate_uid()}.mp3"
+        uid = generate_uid()
+        filename = f"{uid}.mp3"
+
         if not current_app.static_folder:
             return "Something went wrong back here", 500
 
@@ -80,7 +82,12 @@ def index():
             file_managing_thread.name = filename
             pending_threads[server_location] = file_managing_thread
 
-        session["upload"] = {"id": filename, "label": title, "description": description}
+        session["upload"] = {
+            "id": filename,
+            "label": title,
+            "description": description,
+            "uid": uid,
+        }
         return TemplateRules.render_html_segment(
             "confirm-details",
             location=url_for("static", filename=f"audio/{filename}"),
@@ -109,12 +116,13 @@ def confirm_audio_file():
     user: User = g.user
     label = upload.get("label")
     description = upload.get("description")
-    uid = upload.get("id")
+    filename = upload.get("id")
+    uid = upload.get("uid")
 
     server_location = os.path.join(
         str(current_app.static_folder),  # guranteed this None check will pass in prod
         "audio",
-        uid,
+        filename,
     )
 
     if not os.path.exists(server_location):
@@ -142,8 +150,10 @@ def confirm_audio_file():
         print(ie.sqlite_errorname)
         return TemplateRules.render_html_segment("audio-upload")
 
+    audios = db.session.scalars(select(Audio).where(Audio.user_id == user.id)).all()
+
     flash("Image uploaded successfully 💾")
-    return TemplateRules.render_html_segment("left-nav")
+    return TemplateRules.render_html_segment("left-nav", audios=audios)
 
 
 @TemplateRules.returns_segement

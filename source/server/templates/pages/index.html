@@ -4,6 +4,8 @@
   <div class="w-1/2 h-auto">
     {% include "sections/left-nav.html" ignore missing with context %}
   </div>
-  <div class="w-1/2 h-30">{% include "sections/right-nav.html"%}</div>
+  <div class="w-1/2 h-30">
+    {% include "sections/right-nav.html" ignore missing with context %}
+  </div>
 </div>
 {% endblock %}
