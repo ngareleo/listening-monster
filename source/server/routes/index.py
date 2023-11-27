@@ -1,8 +1,7 @@
 from flask import Blueprint, request, g
 from sqlalchemy import select
 from source.server.db import get_db
-from source.server.models import Audio, User
-
+from source.server.models import Audio, Transcription, User
 from source.server.utils import TemplateRules
 
 
@@ -16,11 +15,17 @@ def hello_traveller():
     if request.method == "GET":
         user: User = g.user  # for type hints
         if user:
-            user_audio = db.session.scalars(
-                select(Audio)
-                .where(Audio.user_id == user.id)
-                .order_by(Audio._last_modified)
-            ).all()
-            return TemplateRules.render_html_page("index", audios=user_audio)
+            all_audios = user.audios
+            audio = None
+            transcriptions = None
+            if len(all_audios) > 0:
+                audio = all_audios[0]
+                transcriptions = audio.transcriptions
+            return TemplateRules.render_html_page(
+                "index",
+                audios=all_audios,
+                audio=audio,
+                transcriptions=transcriptions,
+            )
         return TemplateRules.render_html_page("auth", login=True)
     return "sent"

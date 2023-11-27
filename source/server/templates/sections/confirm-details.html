@@ -5,7 +5,10 @@
 -->
 
 <div class="flex flex-col w-full items-start p-10 border rounded-md gap-y-5">
-  <p>Please confirm your audio file. <strong>lack of confirmation in 5 min will not save the audio</strong> </p>
+  <p>
+    Please confirm your audio file.
+    <strong>lack of confirmation in 5 min will not save the audio</strong>
+  </p>
   <div class="flex flex-col items-start gap-y-2">
     <p class="text-lg">{{title}}</p>
     <p class="text-md">{{description}}</p>
@@ -15,11 +18,17 @@
       <audio controls src="{{location}}">
         <a href="{{location}}"> Download audio </a>
       </audio>
-      <button><img src="{{url_for('static', filename='icons/remove.svg' )}}" /></button>
+      <button>
+        <img src="{{url_for('static', filename='icons/remove.svg' )}}" />
+      </button>
     </div>
   </figure>
-  <button hx-get="{{url_for('upload.confirm_audio_file')}}" hx-target="#left-nav" hx-swap="outerHTML" px-4 py-3
-    bg-yellow-900 rounded-3xl text-sm text-white>Yes, this is the
-    right audio
-    file</button>
+  <button
+    hx-get="{{url_for('upload.confirm_audio_file')}}"
+    hx-target="#left-nav"
+    hx-swap="outerHTML"
+    class="bg-slate-800 px-2 py-2 text-white rounded-lg"
+  >
+    Yes, this is the right audio file
+  </button>
 </div>
