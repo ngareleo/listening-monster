@@ -12,26 +12,37 @@
       </div>
     </div>
     <div class="flex gap-x-3">
-      <button>
+      <button hx-delete="audio/{{audio.uid}}" hx-confirm>
         <img src="{{url_for('static', filename='icons/delete.svg' )}}" />
       </button>
       <button>
         <img src="{{url_for('static', filename='icons/edit.svg' )}}" />
       </button>
-      <button>
+      <button
+        hx-get="audio/player/{{audio.uid}}"
+        hx-target="#player"
+        hx-swap="outerHTML"
+      >
         <img src="{{url_for('static', filename='icons/play.svg' )}}" />
       </button>
+      <div id="player"></div>
     </div>
     <div class="flex gap-x-3">
       <select>
         <option>Google translate</option>
         <option>Chrome translate</option>
       </select>
-      <button class="bg-slate-800 px-2 py-2 text-white rounded-lg">
+      <button
+        hx-get="audio/generate/{{audio.uid}}"
+        hx-target="#right-section"
+        hx-swap="outerHTML"
+        class="bg-slate-800 px-2 py-2 text-white rounded-lg"
+      >
         Generate transcription
       </button>
     </div>
   </div>
+  {%if transcriptions %} {% for transcription in transcriptions %}
   <div class="flex flex-col gap-y-5 p-2 border border-slate-200 rounded-md">
     <div class="flex justify-between">
       <p>Translation by Google chrome</p>
@@ -39,23 +50,15 @@
         <img src="{{url_for('static', filename='icons/copy.svg' )}}" />
       </button>
     </div>
-    <p class="text-sm">
-      Asimov's Science Fiction is an American science fiction magazine edited by
-      Sheila Williams (pictured) since 2004. It was launched in 1976 under the
-      title Isaac Asimov's Science Fiction Magazine, and was quickly successful,
-      reaching a circulation of over 100,000 within a year. George H. Scithers,
-      the first editor, published many new writers who went on to be successful
-      in the genre. Shawna McCarthy became the editor in 1983, and expanded the
-      range of stories Asimov's was willing to publish. Stories involving sex or
-      violence scandalized some readers, but Isaac Asimov, the editorial
-      director, defended McCarthy's choices in an editorial. McCarthy
-      transformed the magazine into a leading market for science fiction
-      writers, and more award-winning stories appeared, including fiction by
-      Robert Silverberg and John Varley. Gardner Dozois took over as editor in
-      1985 and multiple award-winning stories appeared during his tenure.
-    </p>
+    <p class="text-sm">{{transcription.value}}</p>
   </div>
-  {% else %}
+  {% endfor %} {% else %}
+  <div
+    class="flex w-full h-20 items-center justify-center border border-slate-300 rounded-md drop-shadow-md"
+  >
+    <p>No transcriptions yet</p>
+  </div>
+  {% endif %} {% else %}
   <div class="flex w-full items-center justify-center h-20">
     <p>No audio chosen</p>
   </div>

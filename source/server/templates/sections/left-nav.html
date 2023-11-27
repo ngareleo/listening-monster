@@ -16,7 +16,9 @@
           <td class="py-2 border border-slate-200 p-2">{{audio.label}}</td>
           <td class="border border-slate-200 p-2">{{audio.length}}</td>
           <td class="border border-slate-200 p-2">{{audio.last_modified}}</td>
-          <td class="border border-slate-200 p-2">
+          <td
+            class="border border-slate-200 p-2 flex items-center justify-around"
+          >
             <button
               class="bg-slate-800 px-2 py-2 text-white rounded-lg"
               hx-get="audio/{{audio.uid}}"
@@ -24,6 +26,15 @@
               hx-swap="outerHTML"
             >
               Open
+            </button>
+            <button
+              hx-delete="audio/{{audio.uid}}"
+              class="border border-slate-800 px-2 py-2 text-black rounded-lg"
+              hx-confirm
+              hx-target="left-nav"
+              hx-swap="outerHTML"
+            >
+              Delete
             </button>
           </td>
         </tr>

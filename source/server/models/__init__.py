@@ -78,7 +78,8 @@ class Audio(sql_instance.Model, Base, T):
     user_id: Mapped[int] = mapped_column("user_id", ForeignKey("user.id"))
     owner: Mapped["User"] = relationship(back_populates="audios")
     uid: Mapped[str] = mapped_column("uid", String, nullable=False, unique=True)
-    
+    transcriptions: Mapped[List["Transcription"]] = relationship(back_populates="audio")
+
     @property
     def length(self) -> str:
         # Get the length in HH:MM:SS format from minutes
@@ -108,4 +109,4 @@ class Transcription(sql_instance.Model, Base, T):
     id: Mapped[int] = mapped_column("id", Integer, primary_key=True)
     value: Mapped[str] = mapped_column("value", String, nullable=False)
     audio_id: Mapped[int] = mapped_column("audio_id", ForeignKey("audio.id"))
-    audio: Mapped["Audio"] = relationship(back_populates="transcription")
+    audio: Mapped["Audio"] = relationship(back_populates="transcriptions")
